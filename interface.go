@@ -53,7 +53,7 @@ func (this *Module) Initialize() {
 	}
 
 	if this.config.Root == "" {
-		this.config.Root = "views"
+		this.config.Root = "asset/views"
 	}
 	if this.config.Shared == "" {
 		this.config.Shared = "shared"
