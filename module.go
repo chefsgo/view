@@ -54,6 +54,7 @@ type (
 		Language string
 		Timezone *time.Location
 		Data     Map
+		Model    Map
 		Helpers  Map
 	}
 )
