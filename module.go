@@ -59,21 +59,51 @@ type (
 	}
 )
 
-func (this *Module) Parse(body Body) (string, error) {
-	if this.connect == nil {
-		return "", errInvalidConnection
+//Driver 为view模块注册驱动
+func (this *Module) Driver(name string, driver Driver, override bool) {
+	this.mutex.Lock()
+	defer this.mutex.Unlock()
+
+	if driver == nil {
+		panic("Invalid view driver: " + name)
 	}
 
-	//view层的helper
-	if body.Helpers == nil {
-		body.Helpers = Map{}
-	}
-	for key, helper := range this.helperActions {
-		//默认不替换，因为http层携带context的方法，更好用一些
-		if _, ok := body.Helpers[key]; !ok {
-			body.Helpers[key] = helper
+	if override {
+		this.drivers[name] = driver
+	} else {
+		if this.drivers[name] == nil {
+			this.drivers[name] = driver
 		}
 	}
+}
 
-	return this.connect.Parse(body)
+func (this *Module) Config(config Config, override bool) {
+	this.mutex.Lock()
+	defer this.mutex.Unlock()
+
+	this.config = config
+}
+
+func (this *Module) Helper(name string, config Helper, override bool) {
+	this.mutex.Lock()
+	defer this.mutex.Unlock()
+
+	alias := make([]string, 0)
+	if name != "" {
+		alias = append(alias, name)
+	}
+	if config.Alias != nil {
+		alias = append(alias, config.Alias...)
+	}
+
+	for _, key := range alias {
+		if override {
+			this.helpers[key] = config
+		} else {
+			if _, ok := this.helpers[key]; ok == false {
+				this.helpers[key] = config
+			}
+		}
+
+	}
 }
