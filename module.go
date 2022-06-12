@@ -15,7 +15,7 @@ func init() {
 var (
 	module = &Module{
 		config: Config{
-			Driver: chef.DEFAULT, Root: "views",
+			Driver: chef.DEFAULT, Root: "asset/views",
 			Shared: "shared", Left: "{%", Right: "%}",
 		},
 		drivers: make(map[string]Driver, 0),

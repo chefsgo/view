@@ -13,6 +13,7 @@ func (this *Module) Parse(body Body) (string, error) {
 	if body.Helpers == nil {
 		body.Helpers = Map{}
 	}
+
 	for key, helper := range this.helperActions {
 		//默认不替换，因为http层携带context的方法，更好用一些
 		if _, ok := body.Helpers[key]; !ok {
